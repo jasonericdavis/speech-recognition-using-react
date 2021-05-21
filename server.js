@@ -21,6 +21,10 @@ io.on('connection', socket => {
     console.log('stream data received')
     revStream && revStream.write(data)
   })
+
+  socket.on('message',  message => {
+    console.log(`message recieved: ${message}`)
+  })
 })
 
 nextApp.prepare().then(() => {

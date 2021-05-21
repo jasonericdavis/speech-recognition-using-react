@@ -2,6 +2,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import fetch from 'isomorphic-unfetch'
 import useSocket from '../hooks/useSocket'
+import UploadForm from '../components/uploadForm'
+import LiveStreamer from '../components/liveStreamer'
 
 function Index(props){
   // const socket = useSocket('message.chat1', message => {
@@ -34,33 +36,20 @@ function Index(props){
                 <source type="video/mp4" />
                 <track id="caption" kind="subtitles" srcLang="en" label="English" default />
             </video>
-            <div class="output-type">
+            <div className="output-type">
                 <input type="radio" id="captionRb" name="output-type" value="caption" />
-                <label for="caption">Caption</label><br />
+                <label htmlFor="caption">Caption</label><br />
                 <input type="radio" id="transcriptionRb" name="output-type" value="transcription" checked />
-                <label for="transcription">Transcription</label><br />
+                <label htmlFor="transcription">Transcription</label><br />
             </div>
-            <div id="transcription" class="transcription">
+            <div id="transcription" className="transcription">
                 Waiting for a transcription
             </div>                
         </div>
         <div className="container-item">
-            <h2>Choose an audio/video file to process</h2>
-            <form id="form">
-                <div>
-                    <label for="mediaFile">Choose a media file to process</label>
-                    <input type="file" name="mediaFile" />
-                </div>
-                <div>
-                    <input type="submit" />
-                </div>
-            </form>
+            <UploadForm />
             <hr />
-            <div>
-                <h2>Or Live-Stream</h2>
-                <button id="startBtn">Start Recording</button>
-                <button id="stopBtn">Stop Recording</button>
-            </div>
+            <LiveStreamer />
         </div>
     </main>
   )

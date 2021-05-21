@@ -4,6 +4,7 @@ import io from 'socket.io-client'
 const socket = io()
 socket.on('connect', () => {console.log(`socket connected (${socket.id})`)})
 socket.on('disconnect', () => {console.log('socket disconnected')} )
+socket.on('message', (message) => console.log(`message: ${message} `))
 
 export default function useSocket(eventName, cb) {
   useEffect(() => {
