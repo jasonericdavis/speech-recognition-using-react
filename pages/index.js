@@ -1,9 +1,11 @@
-import { useState } from 'react'
-import Link from 'next/link'
-import fetch from 'isomorphic-unfetch'
-import useSocket from '../hooks/useSocket'
+// import { useState } from 'react'
+// import Link from 'next/link'
+// import fetch from 'isomorphic-unfetch'
+// import useSocket from '../hooks/useSocket'
 import UploadForm from '../components/uploadForm'
 import LiveStreamer from '../components/liveStreamer'
+import MediaPlayer from '../components/mediaPlayer'
+//import ServiceSelector from '../components/serviceSelector'
 
 function Index(props){
   // const socket = useSocket('message.chat1', message => {
@@ -30,28 +32,28 @@ function Index(props){
   // }
 
   return (
-    <main>
-        <div className="container-item">
-            <video preload="metadata" id="media_player" controls>
-                <source type="video/mp4" />
-                <track id="caption" kind="subtitles" srcLang="en" label="English" default />
-            </video>
-            <div className="output-type">
-                <input type="radio" id="captionRb" name="output-type" value="caption" />
-                <label htmlFor="caption">Caption</label><br />
-                <input type="radio" id="transcriptionRb" name="output-type" value="transcription" checked />
-                <label htmlFor="transcription">Transcription</label><br />
-            </div>
-            <div id="transcription" className="transcription">
-                Waiting for a transcription
-            </div>                
+    <div className="bg-gray-50">
+        {/* <div className="container-item">
+            <MediaPlayer />             
         </div>
         <div className="container-item">
             <UploadForm />
             <hr />
             <LiveStreamer />
+        </div> */}
+        <div className="h-screen">
+          <div className="h-4/5 w-4/5 flex justify-evenly items-center mx-auto mt-8 bg-blue-300">
+            <div>
+              <MediaPlayer />
+            </div>
+            <div>
+              <UploadForm />
+                <hr />
+              <LiveStreamer />
+            </div>
+          </div>
         </div>
-    </main>
+    </div>
   )
 }
 

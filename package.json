@@ -16,6 +16,10 @@
     "socket.io": "^4.1.2",
     "socket.io-client": "^4.1.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "autoprefixer": "^10.2.5",
+    "postcss": "^8.3.0",
+    "tailwindcss": "^2.1.2"
+  },
   "name": "speech-recognition-using-react"
 }
