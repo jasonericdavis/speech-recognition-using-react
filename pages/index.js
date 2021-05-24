@@ -1,16 +1,70 @@
-// import { useState } from 'react'
+import { useEffect, useState } from 'react'
 // import Link from 'next/link'
 // import fetch from 'isomorphic-unfetch'
-// import useSocket from '../hooks/useSocket'
+import useSocket from '../hooks/useSocket'
 import UploadForm from '../components/uploadForm'
 import LiveStreamer from '../components/liveStreamer'
 import MediaPlayer from '../components/mediaPlayer'
 //import ServiceSelector from '../components/serviceSelector'
+import {FaBeer} from 'react-icons/fa'
+
+
+const ActionButtons = ({Icon, mode, updateMode}) => {
+  const [activeIndex, setActiveIndex] = useState(0)
+  return (
+    <div className="w-full">
+      <button 
+        className={`rounded-lg p-4 ${mode === 'async' ? "bg-white": "bg-indigo-100"}`} 
+        onClick={(e) => updateMode('async')}>
+        <Icon />Async
+      </button>
+      <button 
+        className={`rounded-lg p-4 ${mode === 'streaming' ? "bg-white": "bg-indigo-100"}`} 
+        onClick={(e) => updateMode('streaming')}>
+        <Icon />Streaming
+      </button>
+    </div>
+  )
+}
+
+
+
+const ToggleButton = () => {
+  const [toggle, setToggle] = useState(true);
+  const [mode, setMode] = useState('Caption')
+
+  const onChangeHandler = (e) => {
+    setToggle(!toggle)
+  }
+
+  useEffect(() => {
+    setMode(toggle? 'Caption': 'Transcription')
+  }, [toggle])
+
+  return (
+    <div>
+      <div className="w-full">
+      <label className="switch">
+        <input type="checkbox" onChange={onChangeHandler} checked={toggle} />
+        <span className="slider round">{mode}</span>
+      </label>
+      </div>
+      {/* <div>{!toggle ? <textarea></textarea> : null}</div> */}
+    </div>
+
+  )
+}
 
 function Index(props){
-  // const socket = useSocket('message.chat1', message => {
-  //   // setMessages(messages => [...messages, message])
-  // })
+  const [loading, setLoading] = useState(true)
+  const [mode, setMode] = useState('async')
+  const socket = useSocket('message.chat1', message => {
+    // setMessages(messages => [...messages, message])
+  })
+
+  const actionButtonHandler = ({}) => {
+    setLoading(!loading)
+  }
 
   // useSocket('message.chat2', () => {
   //   // setNewMessage(newMessage => newMessage + 1)
@@ -32,7 +86,7 @@ function Index(props){
   // }
 
   return (
-    <div className="bg-gray-50">
+    <div className="bg-gray-50 h-screen">
         {/* <div className="container-item">
             <MediaPlayer />             
         </div>
@@ -41,15 +95,20 @@ function Index(props){
             <hr />
             <LiveStreamer />
         </div> */}
-        <div className="h-screen">
-          <div className="h-4/5 w-4/5 flex justify-evenly items-center mx-auto mt-8 bg-blue-300">
-            <div>
-              <MediaPlayer />
+
+        
+
+        <div className="flex items-center justify-center h-screen">
+          <div className="flex justify-evenly items-center mx-auto bg-blue-300 rounded p-12 shadow-lg">
+            <div className="w-1/2">
+              {loading ? <div><img src="https://via.placeholder.com/450"></img></div> : <MediaPlayer />}
+              <ToggleButton />
             </div>
-            <div>
-              <UploadForm />
-                <hr />
-              <LiveStreamer />
+            <div className="p-2">
+              <ActionButtons Icon={FaBeer} mode={mode} updateMode={setMode}/>
+              <div>
+                {mode === 'async'? <UploadForm /> : <LiveStreamer />}
+              </div>
             </div>
           </div>
         </div>
