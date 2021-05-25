@@ -1,4 +1,4 @@
-POST http://localhost:3000/job
+POST http://localhost:3000/api/job
 Content-Type: application/json
 
 {
@@ -12,3 +12,12 @@ Content-Type: application/json
         "type": "async"
     }
 }
+
+###
+
+http://localhost:3000/api/job
+
+###
+POST http://localhost:3000/api/job
+
+who dis new phone

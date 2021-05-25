@@ -32,7 +32,21 @@ nextApp.prepare().then(() => {
   //   res.json(messages[req.params.chat])
   // })
 
+  app.use(function (req, res, next) {
+    req.io = io;
+    next();
+  });
+
+  // app.get('/t', (req, res) => {
+  //   io.emit('message', 'hello')
+  //   res.status(200).json({ name: 'John Doe' })
+  // })
+
   app.get('*', (req, res) => {
+    return nextHandler(req, res)
+  })
+
+  app.post('*', (req, res) => {
     return nextHandler(req, res)
   })
 

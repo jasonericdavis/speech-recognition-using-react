@@ -57,9 +57,16 @@ const ToggleButton = () => {
 
 function Index(props){
   const [loading, setLoading] = useState(true)
+  const [job, setJob] = useState(null)
   const [mode, setMode] = useState('async')
-  const socket = useSocket('message.chat1', message => {
-    // setMessages(messages => [...messages, message])
+  
+  const socket = useSocket('job', message => {
+    console.log(`received job ${JSON.stringify(message)}`)
+    setJob(message)
+  })
+
+  useSocket('message', (message) => {
+    console.log(`recieved message ${message}`)
   })
 
   const actionButtonHandler = ({}) => {
@@ -86,7 +93,7 @@ function Index(props){
   // }
 
   return (
-    <div className="bg-gray-50 h-screen">
+    <div className="bg-gray-50 h-screen grid grid-rows-layout grid-cols-layout justify-center justify-items-center items-center">
         {/* <div className="container-item">
             <MediaPlayer />             
         </div>
@@ -98,19 +105,18 @@ function Index(props){
 
         
 
-        <div className="flex items-center justify-center h-screen">
-          <div className="flex justify-evenly items-center mx-auto bg-blue-300 rounded p-12 shadow-lg">
-            <div className="w-1/2">
-              {loading ? <div><img src="https://via.placeholder.com/450"></img></div> : <MediaPlayer />}
-              <ToggleButton />
-            </div>
-            <div className="p-2">
-              <ActionButtons Icon={FaBeer} mode={mode} updateMode={setMode}/>
-              <div>
-                {mode === 'async'? <UploadForm /> : <LiveStreamer />}
-              </div>
-            </div>
-          </div>
+        <div className="row-start-2 row-end-4 col-start-2 col-end-3">
+              {loading ? <div><img src="https://via.placeholder.com/400"></img></div> 
+                : <MediaPlayer />}
+        </div>
+        <div className="row-start-2 row-end-3 col-start-3 col-end-4">
+          <ActionButtons Icon={FaBeer} mode={mode} updateMode={setMode}/>
+        </div>
+        <div className="row-start-3 row-end-4 col-start-3 col-end-4">
+            {mode === 'async'? <UploadForm /> : <LiveStreamer />}
+        </div>
+        <div className="row-start-4 row-end-5 col-start-2 col-span-2 bg-blue-100 self-start w-full h-full">
+          <p className="w-full">ahahah</p>
         </div>
     </div>
   )
