@@ -17,7 +17,7 @@ const UploadForm = () => {
         const formData = new FormData();
         formData.append("mediaFile", file)
 
-        fetch("/media", {
+        fetch("/api/media", {
             method: 'POST',
             body: formData
         })
