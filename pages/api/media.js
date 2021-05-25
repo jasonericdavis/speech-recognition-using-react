@@ -1,10 +1,10 @@
-import { create } from "combined-stream";
 import multer from "multer"
-import {RevApiClient} from 'revai-node-sdk'
+import {RevAiApiClient} from 'revai-node-sdk'
 
 const media_path = process.env.media_path || './public/media/'
-const access_token = process.env.access_token;
-const base_url = process.env.base_url || `http://localhost${'3000'}`
+const access_token = process.env.REVAI_ACCESS_TOKEN;
+const base_url = process.env.base_url || `http://localhost:3000`
+const asyncClient = new RevAiApiClient(access_token);
 
 export const config = {
   api: {
@@ -19,13 +19,15 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
       cb(null, file.originalname)
     },
-  })
+})
+  
+const upload = multer({ storage })
 
 const createJob = async (req, res) => {
     try {
         const media_url = `${base_url}/media/${req.file.filename}`
-        const webhook_url = `${base_url}/job`;
-        const asyncClient = new RevAiApiClient(access_token);
+        const webhook_url = `${base_url}/api/job`;
+        
         const job = await asyncClient.submitJobUrl(media_url, {
           callback_url: webhook_url,
         })
@@ -35,17 +37,19 @@ const createJob = async (req, res) => {
         res.status(500).json({error: err.message})
       }
 
-    console.log(`Media File: ${req.file.filename}`)
+    
 }
   
-const upload = multer({ storage })
-
 async function handler(req, res) {
     if(req.method === 'POST') {
         upload.single("mediaFile")(req, {}, async (err) => {
+          if(err) {
+            res.status("500").send(err.message)
+            return
+          }
+            console.log(`Media File: ${req.file.filename}`)
             await createJob(req, res)
-          })
-        //res.sendStatus(200)
+        })
     } else {
         res.status("200").send("Get a job")
     }

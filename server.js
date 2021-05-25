@@ -8,7 +8,6 @@ const dev = process.env.NODE_ENV !== 'production'
 const nextApp = next({ dev })
 const nextHandler = nextApp.getRequestHandler()
 
-
 // socket.io server
 io.on('connection', socket => {
   console.log(`connection made (${socket.id})`)

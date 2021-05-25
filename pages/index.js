@@ -57,13 +57,9 @@ const ToggleButton = () => {
 
 function Index(props){
   const [loading, setLoading] = useState(true)
-  const [job, setJob] = useState(null)
   const [mode, setMode] = useState('async')
   
-  const socket = useSocket('job', message => {
-    console.log(`received job ${JSON.stringify(message)}`)
-    setJob(message)
-  })
+
 
   useSocket('message', (message) => {
     console.log(`recieved message ${message}`)
