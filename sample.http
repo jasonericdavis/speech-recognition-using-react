@@ -22,3 +22,9 @@ POST http://localhost:3000/api/job
 
 ###
 GET http://localhost:3000/api/caption/XNuJmcMoTzCT
+
+###
+POST http://localhost:3000/api/stream/start
+
+###
+POST http://localhost:3000/api/stream/stop

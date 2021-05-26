@@ -2,6 +2,7 @@
 //import React from 'react'
 //import io from 'socket.io-client'
 import '../styles/global.css'
+import Head from 'next/head'
 
 // class MyApp extends App {
 //   static async getInitialProps({ Component, ctx }) {
@@ -34,7 +35,14 @@ import '../styles/global.css'
 // }
 
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+  return (
+    <>
+    <Head>
+    <script src="https://www.WebRTC-Experiment.com/RecordRTC.js"></script>
+    </Head>
+    <Component {...pageProps} />
+    </>
+  )
 }
 
 export default MyApp

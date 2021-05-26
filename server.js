@@ -2,11 +2,16 @@ const app = require('express')()
 const server = require('http').Server(app)
 const io = require('socket.io')(server)
 const next = require('next')
+const StreamingClient = require('./lib/StreamingClient')
+
 
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
 const nextApp = next({ dev })
 const nextHandler = nextApp.getRequestHandler()
+const streamingClient = new StreamingClient(process.env.REVAI_ACCESS_TOKEN, (data) => {
+  io.emit('transcript', data)
+})
 
 // socket.io server
 io.on('connection', socket => {
@@ -17,8 +22,9 @@ io.on('connection', socket => {
   })
 
   socket.on('stream', data => {
-    console.log('stream data received')
-    revStream && revStream.write(data)
+    //console.log('stream data received')
+    //revStream && revStream.write(data)
+    streamingClient.stream(data)
   })
 
   socket.on('message',  message => {
@@ -33,13 +39,10 @@ nextApp.prepare().then(() => {
 
   app.use(function (req, res, next) {
     req.io = io;
+    req.streamingClient = streamingClient
+    
     next();
   });
-
-  // app.get('/t', (req, res) => {
-  //   io.emit('message', 'hello')
-  //   res.status(200).json({ name: 'John Doe' })
-  // })
 
   app.get('*', (req, res) => {
     return nextHandler(req, res)
