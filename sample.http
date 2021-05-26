@@ -28,3 +28,12 @@ POST http://localhost:3000/api/stream/start
 
 ###
 POST http://localhost:3000/api/stream/stop
+
+###
+GET http://localhost:3000/api/transcription/1/2/3
+
+###
+POST http://localhost:3000/api/transcription/1
+Content-Type: application/json
+
+{"type":"partial","ts":36.425,"end_ts":39.725,"elements":[{"type":"text","value":"so"},{"type":"text","value":"only"},{"type":"text","value":"part"},{"type":"text","value":"of"},{"type":"text","value":"the"},{"type":"text","value":"amount"},{"type":"text","value":"on"},{"type":"text","value":"the"}]}

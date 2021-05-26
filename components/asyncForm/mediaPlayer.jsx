@@ -3,16 +3,12 @@ import React, { useState, useEffect } from "react"
 const MediaPlayer = ({src, caption}) => {
     const [cues, setCues] = useState(null)
     const captionRef = React.createRef();
-    const handleOutputTypeChange = (event) => {
-
-    }
 
     useEffect(() => {
         const captionBlob = new Blob([caption], {
             type:"text/vtt;charset=utf-8"
         });
         const url = URL.createObjectURL(captionBlob);
-        // const captionEl = document.querySelector("#caption")
         captionRef.current.mode = "showing";
         captionRef.current.src = url;
         captionRef.current.oncuechange = (e) => {
