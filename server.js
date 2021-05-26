@@ -22,8 +22,6 @@ io.on('connection', socket => {
   })
 
   socket.on('stream', data => {
-    //console.log('stream data received')
-    //revStream && revStream.write(data)
     streamingClient.stream(data)
   })
 
@@ -33,10 +31,6 @@ io.on('connection', socket => {
 })
 
 nextApp.prepare().then(() => {
-  // app.get('/messages/:chat', (req, res) => {
-  //   res.json(messages[req.params.chat])
-  // })
-
   app.use(function (req, res, next) {
     req.io = io;
     req.streamingClient = streamingClient

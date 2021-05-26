@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import useSocket from '../../hooks/useSocket'
 
 let streamingAudio = null
@@ -21,7 +22,7 @@ const streamAudio = (socket) => {
 
 const StreamingForm = () => {
     const socket = useSocket('transcript', data => {
-        console.log(`data recieved: ${data}`)
+        console.log(`data recieved: ${JSON.stringify(data)}`)
     })
 
     const startStreaming = (evt) => {
@@ -44,6 +45,12 @@ const StreamingForm = () => {
             console.log('streaming ended')
         })
     }
+
+    useEffect(() => {
+        return () => {
+            stopStreaming()
+        }
+    })
 
     return (
         <div>
