@@ -9,20 +9,20 @@ import MediaPlayer from '../components/mediaPlayer'
 import {FaBeer} from 'react-icons/fa'
 
 
+
 const ActionButtons = ({Icon, mode, updateMode}) => {
-  const [activeIndex, setActiveIndex] = useState(0)
   return (
-    <div className="w-full">
-      <button 
-        className={`rounded-lg p-4 ${mode === 'async' ? "bg-white": "bg-indigo-100"}`} 
-        onClick={(e) => updateMode('async')}>
-        <Icon />Async
-      </button>
-      <button 
-        className={`rounded-lg p-4 ${mode === 'streaming' ? "bg-white": "bg-indigo-100"}`} 
-        onClick={(e) => updateMode('streaming')}>
-        <Icon />Streaming
-      </button>
+    <div style={{borderBottom: '2px solid #eaeaea'}} className="shadow">
+      <ul className='flex cursor-pointer'>
+          <li className={`w-full py-2 px-6 rounded-t-lg ${mode === 'async' ? "bg-white": "bg-indigo-100"}`}
+          onClick={(e) => updateMode('async')}>
+            Async
+          </li>
+          <li className={`w-full py-2 px-6 rounded-t-lg text-gray-500 ${mode === 'streaming' ? "bg-white": "bg-indigo-100"}`}
+            onClick={(e) => updateMode('streaming')}>
+            Streaming
+          </li>
+      </ul>
     </div>
   )
 }
@@ -74,7 +74,7 @@ function Index(props){
   // })
 
   // const handleSubmit = event => {
-  //   event.preventDefault()
+  //   event.preventDefault() 
 
   //   // // create message object
   //   // const message = {
@@ -89,7 +89,9 @@ function Index(props){
   // }
 
   return (
-    <div className="bg-gray-50 h-screen grid grid-rows-layout grid-cols-layout justify-center justify-items-center items-center">
+    <div className="bg-gray-50 h-screen 
+      grid grid-rows-layout grid-cols-layout gap-y-5 gap-x-5
+      justify-center justify-items-center items-center">
         {/* <div className="container-item">
             <MediaPlayer />             
         </div>
@@ -101,19 +103,20 @@ function Index(props){
 
         
 
-        <div className="row-start-2 row-end-4 col-start-2 col-end-3">
-              {loading ? <div><img src="https://via.placeholder.com/400"></img></div> 
-                : <MediaPlayer />}
-        </div>
-        <div className="row-start-2 row-end-3 col-start-3 col-end-4">
+        <div className="row-start-2 row-end-3 col-start-2 col-end-3 w-full">
           <ActionButtons Icon={FaBeer} mode={mode} updateMode={setMode}/>
         </div>
-        <div className="row-start-3 row-end-4 col-start-3 col-end-4">
+        {/* <div className="row-start-3 row-end-4 col-start-2 col-end-3 w-full">
+              {loading ? <div><img src="https://via.placeholder.com/400"></img></div> 
+                : <MediaPlayer />}
+        </div> */}
+        
+        <div className="row-start-3 row-end-4 col-start-2 col-end-3med w-full">
             {mode === 'async'? <UploadForm /> : <LiveStreamer />}
         </div>
-        <div className="row-start-4 row-end-5 col-start-2 col-span-2 bg-blue-100 self-start w-full h-full">
+        {/* <div className="row-start-4 row-end-5 col-start-2 col-span-2 bg-blue-100 self-start w-full h-full">
           <p className="w-full">ahahah</p>
-        </div>
+        </div> */}
     </div>
   )
 }

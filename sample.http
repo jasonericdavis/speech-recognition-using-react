@@ -6,7 +6,7 @@ Content-Type: application/json
         "callback_url": "http://499fe07c74b2.ngrok.io/job",
         "created_on": "2021-05-17T19:07:32.407Z",
         "id": "zEmtqu2huLBz",
-        "media_url": "http://499fe07c74b2.ngrok.io/media/sample-1.mp3",
+        "media_url": "http://localhost:3000/media/sample-1.mp3",
         "name": "sample-1.mp3",
         "status": "in_progress",
         "type": "async"
@@ -20,4 +20,5 @@ http://localhost:3000/api/job
 ###
 POST http://localhost:3000/api/job
 
-who dis new phone
+###
+GET http://localhost:3000/api/caption/XNuJmcMoTzCT

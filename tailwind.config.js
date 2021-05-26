@@ -4,10 +4,10 @@ module.exports = {
   theme: {
     extend: {
       gridTemplateRows: {
-        'layout': '1fr 100px 300px 100px 1fr'
+        'layout': '1fr 50px 650px 1fr'
       },
       gridTemplateColumns: {
-        'layout': '1fr 400px 400px 1fr'
+        'layout': '1fr 800px 1fr'
       }
     },
   },
