@@ -8,6 +8,9 @@ const { Server } = require('socket.io')
 const app = express();
 const port = 3000;
 const server = http.createServer(app);
+let revStream = null;
+
+// add cors to be able to connect to the websocket locally
 const io = new Server(server, {
   cors: {
     origin: "http://localhost:8080",
@@ -44,9 +47,9 @@ app.use(express.json());
  *  Notes: There is currently a 10MB limit on the size of the audio file because 
  * of a limitiation in axios with the maxBodyLength and maxContentLength
  */
-app.post('/media', upload.single('mediaFile'), async (req, res, next) => {
-  const media_url = `${base_url}/media/${req.file.filename}`
-  const webhook_url = `${base_url}/job`;
+app.post('/api/media', upload.single('mediaFile'), async (req, res, next) => {
+  const media_url = `${base_url}/api/media/${req.file.filename}`
+  const webhook_url = `${base_url}/api/job`;
   console.log(`submit job: ${JSON.stringify({media_url, webhook_url})}`)
   
   try {
@@ -60,16 +63,19 @@ app.post('/media', upload.single('mediaFile'), async (req, res, next) => {
   }
 })
 
-app.post('/job', (req, res) => {
+app.post('/api/job', (req, res) => {
   console.log(`webhook received: ${JSON.stringify(req.body)}`)
   io.emit(`job`, req.body)
   res.sendStatus(200)
 })
 
-app.get('/transcription/:jobId/:format', async (req, res) => {
+app.get('/api/job', (req, res) => {
+  res.status(200).send('Get a job')
+})
+
+app.get('/api/transcription/:jobId/:format', async (req, res) => {
   try {
     const {jobId, format} = req.params
-    console.dir({jobId, format})
 
     if(format.toLowerCase() === 'json') {
       const transcript = await asyncClient.getTranscriptObject(jobId)
@@ -89,7 +95,12 @@ app.get('/transcription/:jobId/:format', async (req, res) => {
   }
 })
 
-app.get('/caption/:jobId', async (req, res) => {
+app.post('/api/transcription', (req, res) => {
+  io.emit('transcript', req.body);
+  res.sendStatus(200)
+})
+
+app.get('/api/caption/:jobId', async (req, res) => {
   try {
     const {jobId} = req.params
     console.dir(jobId)
@@ -112,7 +123,7 @@ app.get('/caption/:jobId', async (req, res) => {
   }
 })
 
-app.post('/stream/start', (req, res) => {
+app.post('/api/stream/start', (req, res) => {
   console.log('Opening the stream')
     streamingClient = new RevAiStreamingClient(
       access_token, new AudioConfig('audio/x-wav')
@@ -134,20 +145,21 @@ app.post('/stream/start', (req, res) => {
         console.log(`Connected with job id: ${connectionMessage.id}`);
     })
 
+    console.log('Opening the Stream')
     revStream = streamingClient.start()
     revStream.on('data', data => {
       io.emit('transcript', data)
     })
     
-    res.sendStatus(200)
+    res.status(200).send('Stream Started')
 })
 
-app.post('/stream/end', (req, res) => {
+app.post('/api/stream/stop', (req, res) => {
   console.log('Closing stream')
   revStream = null;
   streamingClient.end();
   streamingClient = null;
-  res.sendStatus(200)
+  res.status(200).send('Stream Stopped')
 })
 
 io.on('connection', (socket) => {

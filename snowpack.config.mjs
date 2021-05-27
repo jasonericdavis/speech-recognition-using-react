@@ -15,6 +15,18 @@ export default {
     /* Enable an SPA Fallback in development: */
     // {"match": "routes", "src": ".*", "dest": "/index.html"},
     {
+      src: '/api/.*',
+      dest: (req, res) => {
+        // remove /api prefix (optional)
+        //req.url = req.url.replace(/^\/api/, '');
+
+        return proxy.web(req, res, {
+          hostname: 'localhost',
+          port: 3000,
+        });
+      },
+    },
+    {
       src: '/ws',
       upgrade: (req, socket, head) => {
         const defaultWSHandler = (err, req, socket, head) => {
