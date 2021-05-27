@@ -1,22 +1,8 @@
 import React, {useEffect, useState} from 'react'
-import useSocket from '../hooks/useSocket'
+import useSocket from '../../hooks/useSocket'
 import MediaPlayer from './mediaPlayer'
+import Loading from '../common/loading'
 
-const Loading = () => (
-    // <button type="button" className="bg-rose-600" disabled>
-    //     <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
-    //     </svg>
-    //     Processing
-    // </button>
-    <span>
-        <div className="
-            animate-spin w-12 h-12 border-4 
-            border-blue-600 rounded-full loader">
-        </div>
-        Loading
-    </span>
-
-)
 
 const UploadForm = () => {
     const [file, setFile] = useState(null);
@@ -85,7 +71,7 @@ const AsyncForm = () => {
     })
 
     useEffect(() => {
-        setJob(JSON.parse(localStorage.getItem('job')).job || null)
+        setJob(JSON.parse(localStorage.getItem('job'))?.job || null)
         setCaption(localStorage.getItem('caption'))
 
     },[])

@@ -3,7 +3,7 @@ import {RevAiApiClient, CaptionType} from 'revai-node-sdk'
 export default async (req, res) => {
     if(req.method === 'GET') {
         try {
-            const asyncClient = new RevAiApiClient(process.env.revai_access_token)
+            const asyncClient = new RevAiApiClient(process.env.REVAI_ACCESS_TOKEN)
             const {jobId} = req.query
             console.dir(jobId)
             let output = '';
@@ -16,7 +16,7 @@ export default async (req, res) => {
         
               stream.on('end', () => {
                 console.log(output);
-                res.send(output)
+                res.status("200").send(output)
               })
             })
           } catch(err) {
