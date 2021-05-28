@@ -9,11 +9,6 @@ module.exports = class StreamingClient {
     }
 
     start() {
-        // if(!this.revAiStreamingClient) {
-        //     this.revAiStreamingClient = new RevAiStreamingClient(
-        //         this.accessToken, new AudioConfig('audio/x-wav')
-        //     )
-        // }
         this.revAiStreamingClient = new RevAiStreamingClient(
             this.accessToken, new AudioConfig('audio/x-wav')
         )
