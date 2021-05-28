@@ -1,9 +1,9 @@
 const env = require('dotenv')
 const express = require('express')
 const http = require('http')
-const { RevAiApiClient, CaptionType } = require('revai-node-sdk');
+const { RevAiApiClient } = require('revai-node-sdk');
 const { Server } = require('socket.io')
-const StreamingClient = require('./StreamingClient')
+const StreamingClient = require('./lib/StreamingClient')
 const routes = require("./routes");
 
 const app = express();
@@ -28,6 +28,7 @@ const streamingClient = new StreamingClient(access_token, (data) => {
   io.emit('transcript', data)
 })
 
+// The socket connections and messages that will be listened for
 io.on('connection', (socket) => {
   console.log(`connection made (${socket.id})`)
   
@@ -42,7 +43,8 @@ io.on('connection', (socket) => {
 
 // This middleware has to be called before the routes
 app.use(express.json());
-
+ 
+// This middleware adds objects that will later need to be in other routes 
 app.use((req, res, next) => {
   req.streamingClient = streamingClient
   req.asyncClient = asyncClient
@@ -51,10 +53,13 @@ app.use((req, res, next) => {
   next();
 })
 
+// The separate routes to be used
 app.use('/api/stream', routes.stream);
 app.use('/api/media', routes.media);
 app.use('/api/transcription', routes.transcription)
 app.use('/api/caption', routes.caption)
+
+// The static folders to look for files that aren't found in the routes
 app.use(express.static('public'));
 app.use('/media', express.static(mediaPath));
 
