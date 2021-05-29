@@ -16,11 +16,8 @@ const storage = multer.diskStorage({
   })
 const upload = multer({storage})
 
-/**
- *  Notes: There is currently a 10MB limit on the size of the audio file because 
- * of a limitiation in axios with the maxBodyLength and maxContentLength
- */
- router.post('/', upload.single('mediaFile'), async (req, res, next) => {  
+
+router.post('/', upload.single('mediaFile'), async (req, res, next) => {  
     const media_url = `${req.webhookUrl}/media/${req.file.filename}`
     const webhook_url = `${req.webhookUrl}/api/job`;
     console.log(`submit job: ${JSON.stringify({media_url, webhook_url})}`)
