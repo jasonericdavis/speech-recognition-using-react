@@ -3,8 +3,8 @@ const express = require('express')
 const http = require('http')
 const { RevAiApiClient } = require('revai-node-sdk');
 const { Server } = require('socket.io')
-const StreamingClient = require('./lib/StreamingClient')
-const routes = require("./routes");
+const StreamingClient = require('./src/server/lib/StreamingClient')
+const routes = require("./src/server/routes");
 
 const app = express();
 const port = 3000;
@@ -46,10 +46,11 @@ app.use(express.json());
  
 // This middleware adds objects that will later need to be in other routes 
 app.use((req, res, next) => {
+  req.io = io
   req.streamingClient = streamingClient
   req.asyncClient = asyncClient
   req.mediaPath = mediaPath
-  req.baseUrl = process.env.base_url || `http://localhost${port}`
+  req.webhookUrl = process.env.base_url || `http://localhost${port}`
   next();
 })
 
@@ -58,9 +59,10 @@ app.use('/api/stream', routes.stream);
 app.use('/api/media', routes.media);
 app.use('/api/transcription', routes.transcription)
 app.use('/api/caption', routes.caption)
+app.use('/api/job', routes.job)
 
 // The static folders to look for files that aren't found in the routes
-app.use(express.static('public'));
+app.use(express.static('build'));
 app.use('/media', express.static(mediaPath));
 
 server.listen(port, () => {

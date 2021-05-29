@@ -6,7 +6,7 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
     console.log(`webhook received: ${JSON.stringify(req.body)}`)
-    io.emit(`job`, req.body)
+    req.io.emit(`job`, req.body)
     res.sendStatus(200)
 })
 

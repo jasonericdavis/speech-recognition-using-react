@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "dev-client": "snowpack dev",
-    "dev-server": "nodemon --watch src/server src/server/server.js",
+    "dev-client": "snowpack build --watch",
+    "dev-server": "nodemon --watch src/server server.js",
     "dev": "concurrently \"npm:dev-server\" \"npm:dev-client\"",
     "build": "snowpack build",
     "test": "echo \"This template does not include a test runner by default.\" && exit 1"

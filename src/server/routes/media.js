@@ -1,11 +1,7 @@
 const router = require("express").Router();
 const multer = require('multer')
-const { RevAiApiClient } = require('revai-node-sdk');
 
-const port = 3000;
-//const access_token = process.env.REVAI_ACCESS_TOKEN;
 const media_path = process.env.media_path || 'public/media/'
-//const base_url = process.env.base_url || `http://localhost${port}`
 
 // setup multer to get file uploads
 const storage = multer.diskStorage({
@@ -25,8 +21,8 @@ const upload = multer({storage})
  * of a limitiation in axios with the maxBodyLength and maxContentLength
  */
  router.post('/', upload.single('mediaFile'), async (req, res, next) => {  
-    const media_url = `${req.baseUrl}/api/media/${req.file.filename}`
-    const webhook_url = `${req.baseUrl}/api/job`;
+    const media_url = `${req.webhookUrl}/media/${req.file.filename}`
+    const webhook_url = `${req.webhookUrl}/api/job`;
     console.log(`submit job: ${JSON.stringify({media_url, webhook_url})}`)
     
     try {
