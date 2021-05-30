@@ -1,12 +1,10 @@
 const router = require("express").Router();
 const multer = require('multer')
 
-const media_path = process.env.media_path || 'public/media/'
-
 // setup multer to get file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, media_path)
+      cb(null, req.mediaPath)
     },
   
     // for this example we just want to use the same filename as before
@@ -18,8 +16,8 @@ const upload = multer({storage})
 
 
 router.post('/', upload.single('mediaFile'), async (req, res, next) => {  
-    const media_url = `${req.webhookUrl}/media/${req.file.filename}`
-    const webhook_url = `${req.webhookUrl}/api/job`;
+    const media_url = `${req.webhookBaseUrl}/media/${req.file.filename}`
+    const webhook_url = `${req.webhookBaseUrl}/api/job`;
     console.log(`submit job: ${JSON.stringify({media_url, webhook_url})}`)
     
     try {

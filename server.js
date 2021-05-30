@@ -20,7 +20,7 @@ const io = new Server(server, {
 
 env.config();
 const access_token = process.env.REVAI_ACCESS_TOKEN;
-const mediaPath = process.env.media_path || 'public/media/'
+const mediaPath = process.env.MEDIA_PATH || 'public/media/'
 
 // Setup the Rev.ai sdk
 const asyncClient = new RevAiApiClient(access_token);
@@ -50,7 +50,7 @@ app.use((req, res, next) => {
   req.streamingClient = streamingClient
   req.asyncClient = asyncClient
   req.mediaPath = mediaPath
-  req.webhookUrl = process.env.base_url || `http://localhost${port}`
+  req.webhookBaseUrl = process.env.WEBHOOK_BASE_URL || `http://localhost${port}`
   next();
 })
 
