@@ -1,72 +1,55 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import StreamingForm from './components/streamingForm'
 import AsyncForm from './components/asyncForm'
 
 
-const ActionButtons = ({mode, updateMode}) => {
+const Tab = ({children, selected, clickHandler}) => {
   return (
-    <div style={{borderBottom: '2px solid #eaeaea'}} className="shadow">
-      <ul className='flex cursor-pointer'>
-          <li className={`w-full py-2 px-6 rounded-t-lg ${mode === 'async' ? "bg-white": "bg-indigo-100"}`}
-          onClick={(e) => updateMode('async')}>
-            Async
-          </li>
-          <li className={`w-full py-2 px-6 rounded-t-lg text-gray-500 ${mode === 'streaming' ? "bg-white": "bg-indigo-100"}`}
-            onClick={(e) => updateMode('streaming')}>
-            Streaming
-          </li>
-      </ul>
-    </div>
+    <button 
+      className={`
+        text-gray-600 
+        py-4 px-6 block 
+        hover:text-blue-500 
+        focus:outline-none 
+        ${selected ? "border-b-2 font-medium border-blue-500" : null}`}
+        onClick={(e) => clickHandler()}>
+          {children}
+    </button>
   )
 }
 
-
-
-const ToggleButton = () => {
-  const [toggle, setToggle] = useState(true);
-  const [mode, setMode] = useState('Caption')
-
-  const onChangeHandler = (e) => {
-    setToggle(!toggle)
-  }
-
-  useEffect(() => {
-    setMode(toggle? 'Caption': 'Transcription')
-  }, [toggle])
-
+const Navigation = ({mode, updateMode}) => {
   return (
-    <div>
-      <div className="w-full">
-      <label className="switch">
-        <input type="checkbox" onChange={onChangeHandler} checked={toggle} />
-        <span className="slider round">{mode}</span>
-      </label>
-      </div>
-    </div>
+    <div className="bg-white">
+      <nav className="flex flex-col sm:flex-row">
+        <Tab selected={mode === 'async'} clickHandler={() => updateMode('async')}>
+          Async
+        </Tab>
+        <Tab selected={mode === 'streaming'} clickHandler={() => updateMode('streaming')}>
+          Streaming
+        </Tab>
+      </nav>
+  </div>
 
   )
 }
 
 function App(props){
   const [loading, setLoading] = useState(true)
-  const [mode, setMode] = useState('streaming')
+  const [mode, setMode] = useState(localStorage.getItem('mode') || 'async')
   
-  const actionButtonHandler = ({}) => {
-    setLoading(!loading)
+  const onModeChange = (newMode) => {
+    localStorage.setItem('mode', newMode)
+    setMode(newMode)
   }
 
   return (
-    <div className="bg-gray-50 h-screen 
-      grid grid-rows-layout grid-cols-layout gap-y-5 gap-x-5
-      justify-center justify-items-center items-center">     
-
-        <div className="row-start-2 row-end-3 col-start-2 col-end-3 w-full">
-          <ActionButtons mode={mode} updateMode={setMode}/>
-        </div>
-        <div className="row-start-3 row-end-4 col-start-2 col-end-3med w-full">
-            {mode === 'async'? <AsyncForm /> : <StreamingForm />}
-        </div>
-    </div>
+    <section className="text-gray-600 body-font mb-10 md:mb-0 mx-10 ">
+      <div className="container mx-auto mt-10 bg-white shadow-xl rounded-lg">
+        <Navigation mode={mode} updateMode={onModeChange}/>
+        {mode === 'async'? <AsyncForm /> : <StreamingForm />}
+      </div>
+    </section>
   )
 }
 

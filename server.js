@@ -1,4 +1,4 @@
-const env = require('dotenv')
+const env = require('dotenv').config()
 const express = require('express')
 const http = require('http')
 const { RevAiApiClient } = require('revai-node-sdk');
@@ -18,7 +18,6 @@ const io = new Server(server, {
   }
 });
 
-env.config();
 const access_token = process.env.REVAI_ACCESS_TOKEN;
 const mediaPath = process.env.MEDIA_PATH || 'public/media/'
 

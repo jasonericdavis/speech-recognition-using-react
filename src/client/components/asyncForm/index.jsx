@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import useSocket from '../../hooks/useSocket'
 import MediaPlayer from './mediaPlayer'
 import Loading from '../common/loading'
+import {PrimaryButton, SecondaryButton} from '../common/buttons'
 
 
 const UploadForm = () => {
@@ -34,67 +35,78 @@ const UploadForm = () => {
     }
 
     return (
-        <div className="p-2">
-            <label htmlFor="mediaFile">{file ? file.name : 'Choose a media file to process' }</label>
-            <br />
-            <input 
+        <>
+            <h1 className="title-font sm:text-2xl text-xl mb-4 font-medium 
+                    text-gray-900">
+                    {file ? file.name : "Choose A File To Transcribe"}
+            </h1>
+            <p className="mb-8 leading-relaxed"></p>
+            <div className="flex justify-center">
+                <input 
                 type="file"  
                 className="hidden" 
                 ref={fileInput}
                 onChange={onFileChange}/>
-            <div className="inline-flex justify-evenly">
-            <button
-                className="inline-flex items-center h-10 px-2 mx-2
-                nline-block py-2 text-xs font-medium leading-6 text-center text-white uppercase transition bg-blue-700 rounded shadow ripple 
-                hover:shadow-lg hover:bg-blue-800 focus:outline-none"
-                onClick={chooseFileHandler}>
-                <span className="px-2">Select</span>
-            </button>
-            <button className="inline-flex items-center h-10 px-2 mx-2
-                nline-block py-2 text-xs font-medium leading-6 text-center text-white uppercase transition bg-blue-700 rounded shadow ripple 
-                hover:shadow-lg hover:bg-blue-800 focus:outline-none" onClick={submit}>Submit</button>
-
+                <PrimaryButton onClick={chooseFileHandler}>
+                    Upload File
+                </PrimaryButton>
+                <SecondaryButton onClick={submit}>
+                    Submit
+                </SecondaryButton>
             </div>
-        </div>
+        </>
     )
 }
 
 const AsyncForm = () => {
     const [loading, setLoading] = useState(false)
-    const [job, setJob] = useState(null)
-    const [caption, setCaption] = useState(null)
+    const [job, setJob] = useState(
+        localStorage.getItem('job') ?
+        JSON.parse(localStorage.getItem('job')) : null
+    )
+    const [caption, setCaption] = useState(
+        localStorage.getItem('caption') ?
+        JSON.parse(localStorage.getItem('caption')) : null
+    )
 
-    const socket = useSocket('job', message => {
-        console.log(`received job ${JSON.stringify(message)}`)
-        setJob(message.job)
+    const socket = useSocket('job', ({job}) => {
+        console.log(`received job ${JSON.stringify(job)}`)
+        localStorage.setItem('job', JSON.stringify(job))
+        localStorage.setItem('caption', null)
+        setJob(job)
         setCaption(null)
     })
 
-    useEffect(() => {
-        setJob(JSON.parse(localStorage.getItem('job'))?.job || null)
-        setCaption(localStorage.getItem('caption'))
-
-    },[])
-
     // useEffect(() => {
-    //     if(!job) return
+    //     setJob(JSON.parse(localStorage.getItem('job'))?.job || null)
+    //     setCaption(localStorage.getItem('caption'))
 
-    //     const url = `/api/caption/${job.id}`
-    //     fetch(url)
-    //     .then(res => res.text())
-    //     .then(caption => {
-    //         setCaption(caption)
-    //     })
-    //     .catch(err => console.log(err))
-    // }, [job])
+    // },[])
+
+    useEffect(() => {
+        if(!job) return
+
+        const url = `/api/caption/${job.id}`
+        fetch(url)
+        .then(res => res.text())
+        .then(caption => {
+            localStorage.setItem('caption', JSON.stringify(caption))
+            setCaption(caption)
+        })
+        .catch(err => console.log(err))
+    }, [job])
 
     return (
-        <div className="flex flex-col items-center">
-            <div className="row-start-3 row-end-4 col-start-2 col-end-3 flex-grow">
-                {job && caption ? <MediaPlayer src={job.media_url} caption={caption} /> 
-                    : <div><Loading /></div>}
+        <div className="flex px-5 py-24 md:flex-row flex-col items-center">
+            <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6 mb-10 md:mb-0">
+                { job && caption
+                    ? <MediaPlayer src={job.media_url} caption={caption} /> 
+                    : <img className="object-cover object-center rounded" alt="hero" src="https://dummyimage.com/720x600" />
+                }
             </div>
-            <div className="flex-grow">{ loading ? <Loading /> : <UploadForm /> }</div>
+            <div className="lg:flex-grow md:w-1/2 lg:pl-24 md:pl-16 flex flex-col md:items-start md:text-left items-center text-center">
+                <UploadForm />
+            </div>
         </div>
     )
 }
