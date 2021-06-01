@@ -4,6 +4,7 @@
     "dev-server": "nodemon --watch src/server server.js",
     "dev": "NODE_ENV=development concurrently --restart-tries -1 \"npm:dev-server\" \"npm:dev-client\"",
     "build": "snowpack build",
+    "start": "node server",
     "test": "echo \"This template does not include a test runner by default.\" && exit 1"
   },
   "devDependencies": {

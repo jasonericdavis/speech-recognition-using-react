@@ -2,10 +2,10 @@ const { RevAiStreamingClient, AudioConfig } = require('revai-node-sdk');
 
 module.exports = class StreamingClient {
     
-    constructor(accessToken, onData) {
+    constructor(accessToken, io) {
         console.log('Loading Streaming Client')
         this.accessToken = accessToken
-        this.onData = onData
+        this.io = io
     }
 
     start() {
@@ -27,10 +27,13 @@ module.exports = class StreamingClient {
     
         this.revAiStreamingClient.on('connect', connectionMessage => {
             console.log(`Connected with job id: ${connectionMessage.id}`);
+            this.io.emit('streaming-connected', connectionMessage)
         })
         
         this.revStream = this.revAiStreamingClient.start()
-        this.revStream.on('data', data => this.onData(data))
+        this.revStream.on('data', data => {
+            this.io.emit('transcript', data)
+        })
     }
 
     end() {

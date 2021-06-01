@@ -26,7 +26,7 @@ const MediaPlayer = ({src, caption}) => {
    return (
     <>
         <p>{cues}</p>
-        <video id="media_player" src={src} controls>
+        <video className="w-full" id="media_player" src={src} controls>
             <source type="video/mp4" />
             <track ref={captionRef} kind="subtitles" srcLang="en" label="English" default />
         </video>
@@ -36,9 +36,9 @@ const MediaPlayer = ({src, caption}) => {
             <input type="radio" id="transcriptionRb" name="output-type" value="transcription" checked onChange={handleOutputTypeChange} />
             <label htmlFor="transcription">Transcription</label><br />
         </div> */}
-        <div id="transcription" className="transcription p-4">
+        {/* <div id="transcription" className="transcription p-4">
             {caption? caption : 'Waiting for a transcription'}
-        </div>
+        </div> */}
     </>
    )
 }

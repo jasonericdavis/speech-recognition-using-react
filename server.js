@@ -23,9 +23,7 @@ const mediaPath = process.env.MEDIA_PATH || 'public/media/'
 
 // Setup the Rev.ai sdk
 const asyncClient = new RevAiApiClient(access_token);
-const streamingClient = new StreamingClient(access_token, (data) => {
-  io.emit('transcript', data)
-})
+const streamingClient = new StreamingClient(access_token, io)
 
 // The socket connections and messages that will be listened for
 io.on('connection', (socket) => {
