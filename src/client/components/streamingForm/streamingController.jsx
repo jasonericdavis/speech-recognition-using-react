@@ -1,70 +1,46 @@
 import React, {useEffect} from 'react'
 import useSocket from '../../hooks/useSocket'
+import useUserMedia from '../../hooks/useUserMedia'
 import {PrimaryButton} from '../common/buttons'
 
-let streamingAudio = null
+const bufferLength = 1024
+window.AudioContext = window.AudioContext || window.webkitAudioContext
+let audioContext = new AudioContext();
+let analyser = audioContext.createAnalyser();
+analyser.fftSize = bufferLength
 
-//TODO: listen for stop streaming socket message
-const streamAudio = ({socket, canvasRef}) => {
-    navigator.mediaDevices.getUserMedia({audio: true, video: false})
-        .then(stream => {
-        streamingAudio = RecordRTC(stream, {
-            type: 'audio',
-            mimeType: 'audio/wav',
-            timeSlice: 500,
+const audioVisual = ({canvasRef, analyser, bufferLength}) => {
+    const context = canvasRef.current.getContext("2d")
+    let data = new Uint8Array(analyser.frequencyBinCount);
+    var width = canvasRef.current.width;
+    var height = canvasRef.current.height;
+    var barWidth = (width / bufferLength) * 2.5;
 
-            ondataavailable: (blob) => {
-                socket.emit('stream', blob)
-            }
-        })
+    function renderFrame() {
+        requestAnimationFrame(renderFrame)
 
-        window.AudioContext = window.AudioContext || window.webkitAudioContext
-        let audioContext = new AudioContext();
+        let x = 0;
+        let barHeight;
+        analyser.getByteFrequencyData(data);
 
-        const bufferLength = 1024
-        let analyser = audioContext.createAnalyser();
-        analyser.fftSize = bufferLength
+        context.fillStyle = "#fff";
+        context.fillRect(0, 0, width, height);
 
-        let source = audioContext.createMediaStreamSource(stream);
-        source.connect(analyser)
-        
-        let data = new Uint8Array(analyser.frequencyBinCount);
-        const context = canvasRef.current.getContext("2d")
+        for (var i = 0; i < bufferLength; i++) {
+            barHeight = data[i];
+            
+            var r = barHeight + (25 * (i/bufferLength));
+            var g = 250 * (i/bufferLength);
+            var b = 50;
 
+            context.fillStyle = `rgb(${r},${g},${b})`;
+            context.fillRect(x, height - barHeight, barWidth, barHeight);
 
-        streamingAudio.startRecording();
-
-        var width = canvasRef.current.width;
-        var height = canvasRef.current.height;
-        var barWidth = (width / bufferLength) * 2.5;
-
-        function renderFrame() {
-            requestAnimationFrame(renderFrame)
-
-            let x = 0;
-            let barHeight;
-            analyser.getByteFrequencyData(data);
-
-            context.fillStyle = "#fff";
-            context.fillRect(0, 0, width, height);
-
-            for (var i = 0; i < bufferLength; i++) {
-                barHeight = data[i];
-                
-                var r = barHeight + (25 * (i/bufferLength));
-                var g = 250 * (i/bufferLength);
-                var b = 50;
-
-                context.fillStyle = `rgb(${r},${g},${b})`;
-                context.fillRect(x, height - barHeight, barWidth, barHeight);
-
-                x += barWidth + 1;
-            }
+            x += barWidth + 1;
         }
+    }
 
-        renderFrame()
-    })
-
+    renderFrame()
 }
 
 
@@ -74,8 +50,20 @@ const StreamingController = () => {
     const socket = useSocket('streaming-connected', connectionMessage => {
         console.log(`Connection Message: ${JSON.stringify(connectionMessage)}`)
         if(connectionMessage.type === 'connected') {
-            streamAudio({socket, canvasRef})
+            //streamAudio({socket, canvasRef})
+            audioStreamer.startStreaming()
+            audioVisual({canvasRef, analyser, bufferLength: bufferLength})
         }
+    })
+
+    const constraints = {audio: true, video: false}
+    const audioStreamer = useUserMedia({
+        constraints, 
+        streamListener: (stream) => {
+            let source = audioContext.createMediaStreamSource(stream);
+            source.connect(analyser)
+        }, 
+        dataCb: (data) => socket.emit('stream', data)
     })
 
     const startStreaming = (evt) => {
@@ -90,10 +78,10 @@ const StreamingController = () => {
         console.log('stop streaming')
         fetch('/api/stream/stop', {method: 'post'})
         .then( response => {
-            streamingAudio && streamingAudio.stopRecording();
     
             // const videoPlayer = document.getElementById("media_player")
             // videoPlayer.srcObject = null
+            audioStreamer.stopStreaming()
             console.log('streaming ended')
         })
     }
