@@ -35,7 +35,6 @@ const Navigation = ({mode, updateMode}) => {
 }
 
 function App(props){
-  const [loading, setLoading] = useState(true)
   const [mode, setMode] = useState(localStorage.getItem('mode') || 'async')
   
   const onModeChange = (newMode) => {

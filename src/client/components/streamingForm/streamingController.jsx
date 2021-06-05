@@ -68,8 +68,6 @@ const streamAudio = ({socket, canvasRef}) => {
 }
 
 
-
-
 const StreamingController = () => {
     const canvasRef = React.createRef();
 
@@ -80,15 +78,10 @@ const StreamingController = () => {
         }
     })
 
-    useEffect(() => {
-        // streamAudio({socket:null, canvasRef})
-    }, [])
-
     const startStreaming = (evt) => {
         console.log('start streaming')
         fetch('/api/stream/start', {method: 'post'})
         .then( response => {
-            // streamAudio(socket)
             console.log('stream requested')
         })
     }
