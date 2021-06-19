@@ -34,7 +34,7 @@ const MediaUploader = () => {
         <>
             <h1 className="title-font sm:text-2xl text-xl mb-4 font-medium 
                     text-gray-900">
-                    {file ? file : "Choose A File To Transcribe"}
+                    {file ? file.name : "Choose A File To Transcribe"}
             </h1>
             <p className="mb-8 leading-relaxed"></p>
             <div className="flex justify-center">
