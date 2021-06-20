@@ -24,9 +24,9 @@ Concurrently - Concurrently is a development tool that allows multiple processes
 
 ## Environment Variables
 The following environment variables need to be defined:
-- *REVAI_ACCESS_TOKEN* - rev.ai access token
-- *WEBHOOK_BASE_URL* - base URL that rev.ai should send a request to indicating processing of the job is complete
-- *MEDIA_PATH* - the path on the server to store the uploaded media files.
+- *REVAI_ACCESS_TOKEN:* This value is your rev.ai access token
+- *WEBHOOK_BASE_URL:* This value is the base URL for the webhook that rev.ai should send a request to indicating processing of the job is complete. As an example when developing and running the server locally the URL created by the tool [ngrok](http://ngrok.com) can be used as a tunnel to the local server. An exmaple of this value would be `https://140a4f3df18a.ngrok.io`
+- *MEDIA_PATH:* This value is where to store the uploaded media files. An example value would be `public/media/`.
 
 ## Running the server
 To run the development server run the command `npm run dev` from the command line. This command will use Concurrently to run both the Snowpack build command and start the Express server using Nodemon. Any changes to the server source code files will restart the server with the changes. Any changes to the front-end source will be updated but the browser window must be refreshed to see the changes. 
