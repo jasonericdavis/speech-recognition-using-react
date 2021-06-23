@@ -26,6 +26,7 @@ const connect = ({constraints, streamListener, dataCb}, connectedCb) => {
 
 export default function useUserMedia({constraints, streamListener, dataCb}) {
     const [connected, setConnected] = useState(false)
+    const [streaming, setStreaming] = useState(false)
 
     useEffect(() => {
         if(!connected) connect({constraints, streamListener, dataCb}, 
@@ -34,7 +35,6 @@ export default function useUserMedia({constraints, streamListener, dataCb}) {
             })
   
       return function useAudioStreamerCleanup() {
-        //socket.off(eventName, cb)
         streamAudio.stopRecording()
       }
     }, [])
@@ -45,14 +45,18 @@ export default function useUserMedia({constraints, streamListener, dataCb}) {
             return
         }
         streamingAudio.startRecording()
+        setStreaming(true)
     }
 
     const stopStreaming = () => {
         streamingAudio && streamingAudio.stopRecording()
+        setStreaming(false)
     }
   
     return {
         startStreaming,
-        stopStreaming
+        stopStreaming,
+        streaming,
+        connected
     }
 }

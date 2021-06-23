@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useState} from 'react'
 import useSocket from '../../hooks/useSocket'
 import useUserMedia from '../../hooks/useUserMedia'
 import {PrimaryButton} from '../common/buttons'
@@ -45,12 +45,13 @@ const audioVisual = ({canvasRef, analyser, bufferLength}) => {
 
 
 const StreamingController = () => {
+    const [jobId, setJobId] = useState(null)
     const canvasRef = React.createRef();
 
     const socket = useSocket('streaming-connected', connectionMessage => {
         console.log(`Connection Message: ${JSON.stringify(connectionMessage)}`)
         if(connectionMessage.type === 'connected') {
-            //streamAudio({socket, canvasRef})
+            setJobId(connectionMessage.id)
             audioStreamer.startStreaming()
             audioVisual({canvasRef, analyser, bufferLength: bufferLength})
         }
@@ -90,13 +91,21 @@ const StreamingController = () => {
         <>
             <canvas className="w-full" ref={canvasRef}></canvas>
             <div className="flex justify-center">
-                <PrimaryButton onClick={startStreaming}>
-                    Start Streaming
+                <PrimaryButton onClick={startStreaming} disabled={audioStreamer.connected && audioStreamer.streaming}>
+                    Start
                 </PrimaryButton>
-                <PrimaryButton onClick={stopStreaming }>
-                    Stop Streaming
+                <PrimaryButton onClick={stopStreaming } disabled={!audioStreamer.streaming}>
+                    Stop
                 </PrimaryButton>
             </div>
+            {(jobId && !audioStreamer.streaming)   
+                ? 
+                    <div className="py-5">
+                        <a className={`underline`} href={`api/transcription/${jobId}/text` } download={`transcript_${jobId}.txt`}>
+                            download
+                        </a>
+                    </div> 
+                : null}
         </>
     )
 }
